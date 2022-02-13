@@ -1,0 +1,84 @@
+name: rtl-sdr
+summary: Tools for RTL2832 based SDR receivers
+description: |
+  Turns your Realtek RTL2832 based DVB dongle into a SDR receiver.
+
+  For more information see:
+  https://osmocom.org/projects/rtl-sdr/wiki
+license: GPL-2.0
+confinement: strict
+grade: stable
+base: core20
+adopt-info: rtl-sdr
+
+apps:
+  adsb:
+    command: usr/bin/rtl_adsb
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+
+  eeprom:
+    command: usr/bin/rtl_eeprom
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+
+  fm:
+    command: usr/bin/rtl_fm
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+
+  power:
+    command: usr/bin/rtl_power
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+  sdr:
+    command: usr/bin/rtl_sdr
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+
+  tcp:
+    command: usr/bin/rtl_tcp
+    plugs:
+      - home
+      - network-bind
+      - raw-usb
+
+  test:
+    command: usr/bin/rtl_test
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+
+parts:
+  rtl-sdr:
+    plugin: cmake
+    source: git://git.osmocom.org/rtl-sdr.git
+    source-type: git
+    source-tag: 0.6.0
+    cmake-parameters:
+      - -DCMAKE_INSTALL_PREFIX=/usr
+      - -DDETACH_KERNEL_DRIVER=ON
+      - -DENABLE_ZEROCOPY=ON
+    build-packages:
+      - pkg-config
+      - libusb-1.0-0-dev
+    stage-packages:
+      - libusb-1.0-0
+    override-build: |
+      snapcraftctl build
+      snapcraftctl set-version $(git -C $SNAPCRAFT_PART_SRC describe --tags HEAD)
+    prime:
+      - usr/bin/
+      - usr/lib/librtlsdr.so*
+      - lib/*/libusb-*.so*
