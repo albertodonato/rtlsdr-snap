@@ -3,8 +3,7 @@ summary: Tools for RTL2832 based SDR receivers
 description: |
   Turns your Realtek RTL2832 based DVB dongle into a SDR receiver.
 
-  For more information see:
-  https://osmocom.org/projects/rtl-sdr/wiki
+  For more information see: https://osmocom.org/projects/rtl-sdr
 license: GPL-2.0
 confinement: strict
 grade: stable
