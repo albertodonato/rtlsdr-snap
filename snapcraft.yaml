@@ -1,4 +1,4 @@
-name: rtl-sdr
+name: rtlsdr
 summary: Tools for RTL2832 based SDR receivers
 description: |
   Turns your Realtek RTL2832 based DVB dongle into a SDR receiver.
@@ -47,6 +47,15 @@ apps:
 
   tcp:
     command: usr/bin/rtl_tcp
+    plugs:
+      - home
+      - network-bind
+      - raw-usb
+
+  tcp-service:
+    command: usr/bin/rtl_tcp
+    daemon: simple
+    install-mode: disable
     plugs:
       - home
       - network-bind
