@@ -12,6 +12,8 @@ It can be installed from the store via:
 
 The `rtl_<name>` tools will be available as `rtlsdr.<name>` .
 
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/rtlsdr)
+
 
 ## Connecting interfaces
 
@@ -33,6 +35,3 @@ It's shipped disabled by default. To enabled it, with the device connected, run
 ```bash
     sudo snap start rtlsdr
 ```
-
-
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/rtlsdr)
