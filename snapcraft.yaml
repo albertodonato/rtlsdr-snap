@@ -5,6 +5,10 @@ description: |
 
   For more information see: https://osmocom.org/projects/rtl-sdr
 license: GPL-2.0
+website: https://github.com/albertodonato/rtlsdr-snap
+source-code: https://github.com/albertodonato/rtlsdr-snap
+contact: https://github.com/albertodonato/rtlsdr-snap/issues
+issues: https://github.com/albertodonato/rtlsdr-snap/issues
 confinement: strict
 grade: stable
 base: core20
