@@ -11,7 +11,7 @@ contact: https://github.com/albertodonato/rtlsdr-snap/issues
 issues: https://github.com/albertodonato/rtlsdr-snap/issues
 confinement: strict
 grade: stable
-base: core20
+base: core22
 adopt-info: rtl-sdr
 
 apps:
@@ -88,8 +88,8 @@ parts:
     stage-packages:
       - libusb-1.0-0
     override-build: |
-      snapcraftctl build
-      snapcraftctl set-version $(git -C $SNAPCRAFT_PART_SRC describe --tags HEAD)
+      craftctl default
+      craftctl set version=$(git -C $CRAFT_PART_SRC describe --tags HEAD)
     prime:
       - usr/bin/
       - usr/lib/librtlsdr.so*
