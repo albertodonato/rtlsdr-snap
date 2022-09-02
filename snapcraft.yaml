@@ -75,7 +75,7 @@ apps:
 parts:
   rtl-sdr:
     plugin: cmake
-    source: git://git.osmocom.org/rtl-sdr.git
+    source: https://gitea.osmocom.org/sdr/rtl-sdr
     source-type: git
     source-tag: 0.6.0
     cmake-parameters:
