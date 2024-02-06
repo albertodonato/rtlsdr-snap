@@ -22,6 +22,13 @@ apps:
       - network-observe
       - raw-usb
 
+  biast:
+    command: usr/bin/rtl_biast
+    plugs:
+      - home
+      - network-observe
+      - raw-usb
+
   eeprom:
     command: usr/bin/rtl_eeprom
     plugs:
@@ -77,7 +84,7 @@ parts:
     plugin: cmake
     source: https://gitea.osmocom.org/sdr/rtl-sdr
     source-type: git
-    source-tag: 0.6.0
+    source-tag: v2.0.1
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DDETACH_KERNEL_DRIVER=ON
@@ -92,5 +99,5 @@ parts:
       craftctl set version=$(git -C $CRAFT_PART_SRC describe --tags HEAD)
     prime:
       - usr/bin/
-      - usr/lib/librtlsdr.so*
-      - lib/*/libusb-*.so*
+      - usr/lib/*-linux-gnu/librtlsdr.so*
+      - usr/lib/*-linux-gnu/libusb-1.0.so*
