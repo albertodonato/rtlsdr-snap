@@ -11,7 +11,7 @@ contact: https://github.com/albertodonato/rtlsdr-snap/issues
 issues: https://github.com/albertodonato/rtlsdr-snap/issues
 confinement: strict
 grade: stable
-base: core22
+base: core24
 adopt-info: rtl-sdr
 
 apps:
@@ -84,7 +84,7 @@ parts:
     plugin: cmake
     source: https://gitea.osmocom.org/sdr/rtl-sdr
     source-type: git
-    source-tag: v2.0.1
+    source-tag: v2.0.2
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DDETACH_KERNEL_DRIVER=ON
