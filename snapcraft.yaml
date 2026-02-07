@@ -57,7 +57,7 @@ apps:
       - raw-usb
 
   tcp:
-    command: usr/bin/rtl_tcp
+    command: usr/bin/rtl_tcp -a 0.0.0.0
     plugs:
       - home
       - network-bind
