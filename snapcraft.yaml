@@ -12,6 +12,10 @@ issues: https://github.com/albertodonato/rtlsdr-snap/issues
 confinement: strict
 grade: stable
 base: core26
+platforms:
+  amd64:
+  arm64:
+  armhf:
 adopt-info: rtl-sdr
 
 apps:
