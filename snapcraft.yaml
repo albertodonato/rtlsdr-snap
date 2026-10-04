@@ -84,7 +84,7 @@ parts:
     plugin: cmake
     source: https://gitea.osmocom.org/sdr/rtl-sdr
     source-type: git
-    source-tag: v2.0.2
+    source-tag: v2.0.3
     cmake-parameters:
       - -DCMAKE_INSTALL_PREFIX=/usr
       - -DDETACH_KERNEL_DRIVER=ON
