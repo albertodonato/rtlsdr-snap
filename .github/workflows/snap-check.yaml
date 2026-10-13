@@ -1,0 +1,43 @@
+name: Snap check
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: Name of the check step
+        type: string
+        required: true
+      run:
+        description: Script to run after the snap is installed
+        type: string
+        required: true
+
+env:
+  RTLSDR_SNAP_BINARIES: |-
+    adsb
+    biast
+    eeprom
+    fm
+    power
+    sdr
+    tcp
+    test
+  RTLSDR_SNAP_SERVICES: |-
+    tcp-service
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download snap
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: snap
+          path: ${{ runner.temp }}/snap
+
+      - name: Install snap
+        run: |
+          sudo snap install --dangerous "$RUNNER_TEMP"/snap/*.snap
+
+      - name: ${{ inputs.name }}
+        run: ${{ inputs.run }}

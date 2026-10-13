@@ -8,19 +8,6 @@ on:
     branches:
       - main
 
-env:
-  RTLSDR_SNAP_BINARIES: |-
-    adsb
-    biast
-    eeprom
-    fm
-    power
-    sdr
-    tcp
-    test
-  RTLSDR_SNAP_SERVICES: |-
-    tcp-service
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -40,67 +27,40 @@ jobs:
           if-no-files-found: error
 
   check-binaries:
-    runs-on: ubuntu-latest
     needs: [build]
-    steps:
-      - name: Download snap
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: snap
-
-      - name: Install snap
-        run: |
-          sudo snap install --dangerous ./*.snap
-
-      - name: Check all binaries
-        run: |
-          actual=$(find /snap/bin -name 'rtlsdr.*' -printf '%f\n' | sed 's/^rtlsdr\.//' | sort)
-          diff <(sort <<< "$RTLSDR_SNAP_BINARIES") <(echo "$actual")
+    uses: ./.github/workflows/snap-check.yaml
+    with:
+      name: Check all binaries
+      run: |
+        actual=$(find /snap/bin -name 'rtlsdr.*' -printf '%f\n' | sed 's/^rtlsdr\.//' | sort)
+        diff <(sort <<< "$RTLSDR_SNAP_BINARIES") <(echo "$actual")
 
   check-binaries-run:
-    runs-on: ubuntu-latest
     needs: [build]
-    steps:
-      - name: Download snap
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: snap
-
-      - name: Install snap
-        run: |
-          sudo snap install --dangerous ./*.snap
-
-      - name: Run all binaries
-        run: |
-          failed=()
-          while read -r bin; do
-            echo "::group::rtlsdr.$bin --help"
-            # rtl-sdr tools print usage and exit 1 on --help, so only fail
-            # when the binary can't be executed (126/127) or times out (124)
-            rc=0
-            timeout 10 "/snap/bin/rtlsdr.$bin" --help || rc=$?
-            echo "::endgroup::"
-            if (( rc > 1 )); then
-              echo "::error::rtlsdr.$bin exited with $rc"
-              failed+=("$bin")
-            fi
-          done <<< "$RTLSDR_SNAP_BINARIES"
-          (( ${#failed[@]} == 0 ))
+    uses: ./.github/workflows/snap-check.yaml
+    with:
+      name: Run all binaries
+      run: |
+        failed=()
+        while read -r bin; do
+          echo "::group::rtlsdr.$bin -h"
+          # rtl-sdr tools print usage and exit 1 on -h, so only fail
+          # when the binary can't be executed (126/127) or times out (124)
+          rc=0
+          timeout 10 "/snap/bin/rtlsdr.$bin" -h || rc=$?
+          echo "::endgroup::"
+          if (( rc > 1 )); then
+            echo "::error::rtlsdr.$bin exited with $rc"
+            failed+=("$bin")
+          fi
+        done <<< "$RTLSDR_SNAP_BINARIES"
+        (( ${#failed[@]} == 0 ))
 
   check-services:
-    runs-on: ubuntu-latest
     needs: [build]
-    steps:
-      - name: Download snap
-        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
-        with:
-          name: snap
-
-      - name: Install snap
-        run: |
-          sudo snap install --dangerous ./*.snap
-
-      - name: Check all services
-        run: |
-          actual=$(snap services rtlsdr | awk 'NR > 1 { sub(/^rtlsdr\./, "", $1); print $1 }' | sort)
-          diff <(sort <<< "$RTLSDR_SNAP_SERVICES") <(echo "$actual")
+    uses: ./.github/workflows/snap-check.yaml
+    with:
+      name: Check all services
+      run: |
+        actual=$(snap services rtlsdr | awk 'NR > 1 { sub(/^rtlsdr\./, "", $1); print $1 }' | sort)
+        diff <(sort <<< "$RTLSDR_SNAP_SERVICES") <(echo "$actual")
