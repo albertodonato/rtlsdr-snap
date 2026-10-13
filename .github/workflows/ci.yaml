@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Build snap
+        id: build-snap
+        uses: snapcore/action-build@3bdaa03e1ba6bf59a65f84a751d943d549a54e79 # v1.3.0
+
+      - name: Upload snap
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: snap
+          path: ${{ steps.build-snap.outputs.snap }}
+          if-no-files-found: error
+
+  check-binaries:
+    needs: [build]
+    uses: ./.github/workflows/snap-check.yaml
+    with:
+      name: Check all binaries
+      run: |
+        actual=$(find /snap/bin -name 'rtlsdr.*' -printf '%f\n' | sed 's/^rtlsdr\.//' | sort)
+        diff <(sort <<< "$RTLSDR_SNAP_BINARIES") <(echo "$actual")
+
+  check-binaries-run:
+    needs: [build]
+    uses: ./.github/workflows/snap-check.yaml
+    with:
+      name: Run all binaries
+      run: |
+        failed=()
+        while read -r bin; do
+          echo "::group::rtlsdr.$bin -h"
+          # rtl-sdr tools print usage and exit 1 on -h, so only fail
+          # when the binary can't be executed (126/127) or times out (124)
+          rc=0
+          timeout 10 "/snap/bin/rtlsdr.$bin" -h || rc=$?
+          echo "::endgroup::"
+          if (( rc > 1 )); then
+            echo "::error::rtlsdr.$bin exited with $rc"
+            failed+=("$bin")
+          fi
+        done <<< "$RTLSDR_SNAP_BINARIES"
+        (( ${#failed[@]} == 0 ))
+
+  check-services:
+    needs: [build]
+    uses: ./.github/workflows/snap-check.yaml
+    with:
+      name: Check all services
+      run: |
+        actual=$(snap services rtlsdr | awk 'NR > 1 { sub(/^rtlsdr\./, "", $1); print $1 }' | sort)
+        diff <(sort <<< "$RTLSDR_SNAP_SERVICES") <(echo "$actual")
