@@ -1,5 +1,6 @@
 # Snap package for RTL-SDR tools
 
+[![Build status](https://github.com/albertodonato/rtlsdr-snap/workflows/CI/badge.svg)](https://github.com/albertodonato/rtlsdr-snap/actions?query=workflow%3ACI)
 [![Snap Package](https://snapcraft.io/rtlsdr/badge.svg)](https://snapcraft.io/rtlsdr)
 
 This snap provides the [RTL-SDR](https://osmocom.org/projects/rtl-sdr) tools.
